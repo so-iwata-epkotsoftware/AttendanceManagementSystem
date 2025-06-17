@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AttendanceStatusFactory extends Factory
 {
+    const STATUS = [
+        'pending', # 未承認
+        'approved', # 承認
+        'rejected', # 否認
+    ];
+
     /**
      * Define the model's default state.
      *
@@ -19,11 +25,10 @@ class AttendanceStatusFactory extends Factory
     public function definition(): array
     {
         return [
-            'attendance_id' => Attendance::factory(),
-            'status'        => fake()->randomElement(['pending', 'approved', 'rejected']),
-            'user_id'       => User::factory(),  // ステータス更新者
+            'attendance_id' => Attendance::inRandomOrder()->value('id'),
+            'status'        => fake()->randomElement(self::STATUS),
+            'user_id'       => 2, # User::factory(),  // ステータス更新者
             'reason'        => fake()->optional()->sentence,
-
         ];
     }
 }

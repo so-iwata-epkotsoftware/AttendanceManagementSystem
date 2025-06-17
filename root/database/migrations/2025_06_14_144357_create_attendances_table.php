@@ -19,7 +19,6 @@ return new class extends Migration
             $table->dateTime('clock_out');
             $table->float('work_hours');
             $table->float('overtime_hours');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->integer('break_minutes')->default(0);
             $table->timestamps();
         });

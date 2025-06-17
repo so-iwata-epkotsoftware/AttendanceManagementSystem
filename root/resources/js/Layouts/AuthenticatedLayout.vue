@@ -23,21 +23,20 @@ const showingNavigationDropdown = ref(false);
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
+                                    <ApplicationLogo  class="block h-9 w-auto fill-current text-gray-800"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
-                            <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
-                            >
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
+                                </NavLink>
+                                <NavLink :href="route('attendances.create')" :active="route().current('attendances.create')">
+                                    勤怠打刻
+                                </NavLink>
+                                <NavLink :href="route('attendances.index')" :active="route().current('attendances.index')">
+                                    勤怠一覧
                                 </NavLink>
                             </div>
                         </div>
@@ -140,11 +139,14 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
+                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('attendances.create')" :active="route().current('attendances.create')">
+                            勤怠打刻
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('attendances.index')" :active="route().current('attendances.index')">
+                            勤怠一覧
                         </ResponsiveNavLink>
                     </div>
 
