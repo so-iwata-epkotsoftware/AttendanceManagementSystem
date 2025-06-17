@@ -28,11 +28,11 @@ class AttendanceHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'attendance_id' => Attendance::factory(),
+            'attendance_id' => Attendance::inRandomOrder()->value('id'),
             'field_changed' => fake()->randomElement(self::FIELD_CHANGED),
             'old_value'     => fake()->text(50),
             'new_value'     => fake()->text(50),
-            'user_id'       => User::factory(),
+            'user_id'       => 2,
 
         ];
     }

@@ -19,6 +19,7 @@ class CompanyFactory extends Factory
         return [
             'name'    => fake()->company,
             'address' => fake()->address,
+            'work_hours' => 8.0,
         ];
     }
 }

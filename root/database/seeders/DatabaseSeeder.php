@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AttendanceStatusSeeder::class,
             AttendanceHistorySeeder::class,
             VacationSeeder::class,
+            // AnnualAttendanceSeeder::class,
         ]);
     }
 }

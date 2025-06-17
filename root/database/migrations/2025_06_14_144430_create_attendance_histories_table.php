@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('attendance_histories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // 更新者のユーザーID
             $table->foreignId('attendance_id')->constrained()->onDelete('cascade'); // attendanceテーブルの外部キー
             $table->string('field_changed'); // 変更されたフィールド名
             $table->text('old_value'); // 変更前の値
             $table->text('new_value'); // 変更後の値
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // 更新者のユーザーID
             $table->timestamps();
         });
     }

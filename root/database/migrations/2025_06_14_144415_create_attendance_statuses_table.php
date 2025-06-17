@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    const STATUS = [
+        'pending', # 未承認
+        'approved', # 承認
+        'rejected', # 否認
+    ];
+
     /**
      * Run the migrations.
      */
@@ -13,10 +19,10 @@ return new class extends Migration
     {
         Schema::create('attendance_statuses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('attendance_id')->constrained()->onDelete('cascade'); // attendanceテーブルの外部キー
-            $table->enum('status', ['pending', 'approved', 'rejected']);
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // 更新者のユーザーID
-            $table->text('reason')->nullable(); // ステータス変更理由
+            $table->foreignId('attendance_id')->constrained()->onDelete('cascade'); // attendanceテーブルの外部キー
+            $table->enum('status', self::STATUS);
+            $table->text('reason')->nullable(); // ステータス変更
             $table->timestamps();
         });
     }

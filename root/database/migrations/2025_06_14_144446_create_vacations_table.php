@@ -6,12 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    const VACATION_TYPE = [
-        'paid', # 有給
-        'sick', # 病欠
-        'unpaid', # 無給
-        'special' # 特別休暇
+    const ATTENDANCE_CLASSIFICATION = [
+        'RegularAttendance', # 通常出勤
+        'LateArrival', # 遅刻
+        'EarlyLeaving', # 早退
+        'Absence', # 欠勤
+        'PaidLeave', # 有給休暇
+        'SpecialLeave', # 特別休暇
+        'HolidayWork', # 休日出勤
+        'CompensatedLeave', # 振替出勤
+        'StaggeredWork', # 時差出勤	　
+        'Telecommuting', # 在宅勤務
+        'BusinessTravel', # 出張
+        'HalfDayPaidMorning', # 半日有給（午前）
+        'HalfDayPaidAfternoon', # 半日有給（午後）
     ];
+
     /**
      * Run the migrations.
      */
@@ -20,9 +30,8 @@ return new class extends Migration
         Schema::create('vacations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // usersテーブルの外部キー
-            $table->enum('vacation_type', self::VACATION_TYPE); // 休暇タイプ
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->foreignId('attendance_id')->constrained()->onDelete('cascade'); // attendanceテーブルの外部キー
+            $table->enum('vacation_type', self::ATTENDANCE_CLASSIFICATION); // 休暇タイプ
             $table->text('reason')->nullable();
             $table->timestamps();
         });

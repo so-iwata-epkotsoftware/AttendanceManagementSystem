@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address')->nullable();
+            $table->float('work_hours')->default(8.0); // 所定労働時間（例: 8.0 = 8時間、float型）
             $table->timestamps();
         });
     }
