@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Attendance;
+use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,7 +16,7 @@ class AttendanceSeeder extends Seeder
     public function run(): void
     {
         $userId = 2;
-        $companyId = 1;
+        $companyId = Company::inRandomOrder()->value('id');
         $year = date('Y');
 
         // 1月〜12月ループ
@@ -27,7 +28,7 @@ class AttendanceSeeder extends Seeder
                 // 18時～23時の間でランダムな時・分を生成
                 $randomHour = rand(18, 23);
                 $randomMinute = rand(0, 59);
-                
+
                 // 土日を除く平日のみ作成
                 if (!in_array($startDate->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
                     $clockIn = $startDate->copy()->setTime(9, 0);

@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,6 +19,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'company_id',
+        'admin_id',
         'name',
         'email',
         'password',
@@ -70,4 +73,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vacation::class);
     }
+
+    // スタッフ検索用スコープ
+    #[Scope]
+    protected function searchUser(Builder $query, ?string $searchUser)
+    {
+        if (!empty($searchUser)) {
+            return $query->where('id', 'like', '%' . $searchUser . '%')
+                    ->orWhere('name', 'like', '%' . $searchUser . '%')
+                    ->orWhere('email', 'like', '%' . $searchUser . '%');
+        }
+
+        return $query;
+    }
+
+    // $query->whereHas('company', function ($q) use ($selectedCompanies) {
+        //     $q->whereIn('name', $selectedCompanies);
+        // });
+
+    // 会社検索用スコープ
+    #[Scope]
+    protected function searchCompany(Builder $query, ?array $selectedCompanies)
+    {
+        if (!empty($selectedCompanies)) {
+            return $query->whereHas('company', function ($query) use ($selectedCompanies) {
+                $query->whereIn('name', $selectedCompanies);
+            });
+        }
+
+        return $query;
+    }
+
 }

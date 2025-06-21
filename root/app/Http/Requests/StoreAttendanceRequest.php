@@ -39,14 +39,14 @@ class StoreAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'date'       => ['required', 'date_format:Y/m/d'],
             'user_id'        => ['required', 'exists:users,id'],
             'company_id'     => ['required','exists:companies,id'],
-            'clock_in'  => ['required', 'date_format:H:i', 'before_or_equal:clock_out'],
-            'clock_out' => ['nullable', 'date_format:H:i', 'after:clock_in'],
+            'clock_in'       => ['nullable', 'date_format:H:i', 'before_or_equal:clock_out'],
+            'clock_out'      => ['nullable', 'date_format:H:i', 'after:clock_in'],
             'break_minutes'  => ['nullable','integer','min:0','max:180'],
-
-            'vacation_type' => ['required', Rule::in(self::ATTENDANCE_CLASSIFICATION)],
-            'reason'        => ['nullable','string','max:1000',]
+            'vacation_type'  => ['required', Rule::in(self::ATTENDANCE_CLASSIFICATION)],
+            'reason'         => ['nullable','string','max:1000',]
         ];
     }
 }
