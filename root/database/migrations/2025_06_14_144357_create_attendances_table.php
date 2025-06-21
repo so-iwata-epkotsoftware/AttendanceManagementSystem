@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // usersテーブルの外部キー
             $table->foreignId('company_id')->constrained()->onDelete('cascade'); // companiesテーブルの外部キー
-            $table->dateTime('clock_in');
-            $table->dateTime('clock_out');
-            $table->float('work_hours');
-            $table->float('overtime_hours');
-            $table->integer('break_minutes')->default(0);
+            $table->date('date');
+            $table->dateTime('clock_in')->nullable();
+            $table->dateTime('clock_out')->nullable();
+            $table->float('work_hours')->nullable();
+            $table->float('overtime_hours')->nullable();
+            $table->integer('break_minutes')->nullable()->default(0);
             $table->timestamps();
+
+            $table->unique(['user_id', 'date']); // 同じユーザーが同じ日に複数レコードを登録出来ないよう設定
         });
     }
 

@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CompanySeeder::class,
+            AdminSeeder::class,
             UserSeeder::class,
-            AttendanceSeeder::class,
-            AttendanceStatusSeeder::class,
-            AttendanceHistorySeeder::class,
-            VacationSeeder::class,
-            // AnnualAttendanceSeeder::class,
+
+            // AttendanceSeeder::class,
+            // AttendanceStatusSeeder::class,
+            // AttendanceHistorySeeder::class,
+            // VacationSeeder::class,
         ]);
     }
 }

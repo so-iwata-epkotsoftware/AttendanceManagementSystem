@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth', 'staff'])
+
+Route::middleware(['auth'])
     ->prefix('attendances')
     ->name('attendances.')
     ->controller(AttendanceController::class)
@@ -16,6 +17,7 @@ Route::middleware(['auth', 'staff'])
         Route::get('/create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
         Route::post('/{attendance}', 'update')->name('update');
+        Route::get('/request_attendances', 'request_attendances')->name('request_attendances');
     });
 
 Route::get('/', function () {
@@ -38,4 +40,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__ . '/Admin/admin.php';
 require __DIR__ . '/auth.php';

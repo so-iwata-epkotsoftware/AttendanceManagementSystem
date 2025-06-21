@@ -32,8 +32,9 @@ class AttendanceController extends Controller
         $startDate = Carbon::create($date['year'], $date['month'], 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 
-        $attendances = Attendance::select('id', 'user_id', 'company_id', 'clock_in', 'clock_out', 'work_hours', 'break_minutes', 'overtime_hours')->where('user_id', $user->id)
-            ->whereBetween('clock_in', [$startDate, $endDate])
+
+        $attendances = Attendance::select('id', 'date', 'user_id', 'company_id', 'clock_in', 'clock_out', 'work_hours', 'break_minutes', 'overtime_hours', 'created_at')->where('user_id', $user->id)
+            ->whereBetween('date', [$startDate, $endDate])
             ->orderBy('clock_in', 'asc')
             ->with(['attendance_status' => function($query) {
                         $query->select('id', 'user_id', 'attendance_id', 'status', 'reason');
@@ -53,8 +54,10 @@ class AttendanceController extends Controller
 
         foreach ($attendances as $attendance)
         {
-            $data[Carbon::parse($attendance->clock_in)->format('Y/m/d')] = [$attendance];
+            $data[Carbon::parse($attendance->date)->format('Y/m/d')] = [$attendance];
         }
+
+        // dd($data);
 
         return Inertia::render('Attendances/Index', [
             'data' => $data,
@@ -72,11 +75,26 @@ class AttendanceController extends Controller
 
         $today = Carbon::today();
 
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('clock_in', $today)
+        $attendance = Attendance::select('id', 'user_id', 'company_id', 'clock_in', 'clock_out', 'break_minutes')
+            ->where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->with([
+                'vacation' => function($query) {
+                    $query->select('id', 'user_id', 'attendance_id', 'vacation_type');
+                },
+                'attendance_status' => function($query) {
+                    $query->select('id', 'user_id', 'attendance_id', 'reason', 'status');
+                },
+            ])
             ->first();
 
+            if ($attendance['clock_in'] ?? null)
+            {
+                $attendance['clock_in'] = Carbon::parse($attendance['clock_in'])->format('H:i');
+            }
+
         return Inertia::render('Attendances/Create', [
+            'today' => $today->format('Y/m/d'),
             'user' => $user,
             'stampData' =>  $attendance,
         ]);
@@ -87,30 +105,39 @@ class AttendanceController extends Controller
      */
     public function store(StoreAttendanceRequest $request)
     {
-        // dd($request);
+
+        // dd(Carbon::parse($request->date)->format('Y-m-d'));
 
         DB::transaction(function() use($request) {
-            $clockIn = Carbon::parse($request['date'] . $request['clock_in']);
-            $clockOut = Carbon::parse($request['date'] . $request['clock_out']);
-            $breakMinutes = intval($request['break_minutes']);
-            $DesignatedWorkingHours = Company::where('id', $request['company_id'])->value('work_hours');
+            $clockIn = $request['clock_in'] ?
+                        Carbon::parse($request['date'] . ' ' . $request['clock_in'])
+                        : null;
+            $clockOut = $request['clock_out'] ?
+                        Carbon::parse($request['date'] . ' ' . $request['clock_out'])
+                        : null;
 
-            // 差分（分単位）で取得
-            $totalMinutes = $clockIn->diffInMinutes($clockOut);
+            if ($request['clock_in'] && $request['clock_out']) {
+                $breakMinutes = intval($request['break_minutes']);
+                $DesignatedWorkingHours = Company::where('id', $request['company_id'])->value('work_hours');
 
-            // 実働時間（分単位 → 時間に変換）
-            $workHours = ($totalMinutes - $breakMinutes) / 60;
-            // 残業時間
-            $overtime_hours = $workHours - $DesignatedWorkingHours;
+                // 差分（分単位）で取得
+                $totalMinutes = $clockIn->diffInMinutes($clockOut);
+
+                // 実働時間（分単位 → 時間に変換）
+                $workHours = ($totalMinutes - $breakMinutes) / 60;
+                // 残業時間
+                $overtime_hours = $workHours - $DesignatedWorkingHours;
+            }
 
             $attendance = Attendance::create([
+                'date' => Carbon::parse($request->date)->format('Y-m-d'),
                 'user_id' => $request->user_id,
                 'company_id' => $request->company_id,
                 'clock_in' => $clockIn,
                 'clock_out' => $clockOut,
                 'break_minutes' => $request['break_minutes'],
-                'work_hours' => $workHours,
-                'overtime_hours' => $overtime_hours,
+                'work_hours' => $workHours ?? null,
+                'overtime_hours' => $overtime_hours ?? null,
             ]);
 
             Vacation::create([
@@ -135,25 +162,34 @@ class AttendanceController extends Controller
     public function update(UpdateAttendanceRequest $request, Attendance $attendance)
     {
         DB::transaction(function() use($request, $attendance) {
-            $clockIn = Carbon::parse($request['date'] . $request['clock_in']);
-            $clockOut = Carbon::parse($request['date'] . $request['clock_out']);
+            $clockIn = $request['clock_in'] ?
+                        Carbon::parse($request['date'] . ' ' . $request['clock_in'])
+                        : null;
+            $clockOut = $request['clock_out'] ?
+                        Carbon::parse($request['date'] . ' ' . $request['clock_out'])
+                        : null;
             $breakMinutes = intval($request['break_minutes']);
             $DesignatedWorkingHours = $attendance->company->work_hours;
 
-            // 差分（分単位）で取得
-            $totalMinutes = $clockIn->diffInMinutes($clockOut);
+            if ($request['clock_in'] && $request['clock_out']) {
+                $breakMinutes = intval($request['break_minutes']);
+                $DesignatedWorkingHours = Company::where('id', $request['company_id'])->value('work_hours');
 
-            // 実働時間（分単位 → 時間に変換）
-            $workHours = ($totalMinutes - $breakMinutes) / 60;
-            // 残業時間
-            $overtime_hours = $workHours - $DesignatedWorkingHours;
+                // 差分（分単位）で取得
+                $totalMinutes = $clockIn->diffInMinutes($clockOut);
+
+                // 実働時間（分単位 → 時間に変換）
+                $workHours = ($totalMinutes - $breakMinutes) / 60;
+                // 残業時間
+                $overtime_hours = $workHours - $DesignatedWorkingHours;
+            }
 
             $attendance->update([
                 'clock_in' => $clockIn,
                 'clock_out' => $clockOut,
                 'break_minutes' => $request['break_minutes'],
-                'work_hours' => $workHours,
-                'overtime_hours' => $overtime_hours,
+                'work_hours' => $workHours ?? null,
+                'overtime_hours' => $overtime_hours ?? null,
             ]);
 
 
@@ -163,6 +199,7 @@ class AttendanceController extends Controller
 
             $attendance->attendance_status->update([
                 'reason' => $request['reason'],
+                'status' => 'pending',
             ]);
         });
 
@@ -174,6 +211,12 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        //
+    }
+
+    public function request_attendances()
+    {
+        return Inertia::render('Attendances/RequestAttendances', [
+            'user' => Auth::user(),
+        ]);
     }
 }

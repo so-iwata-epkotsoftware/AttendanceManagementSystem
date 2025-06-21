@@ -1,10 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 import Modal from '@/Components/Modal.vue';
-import Stamp from '@/Components/Attendances/Show.vue';
+import Show from '@/Components/Attendances/Show.vue';
 
 const props = defineProps({
     data : Object, // データ取得
@@ -12,15 +12,12 @@ const props = defineProps({
     errors : Object,
 });
 
-console.log(props.data);
-
 const date = reactive({
     'year' : props.date.year,
     'month' : props.date.month,
 });
 
 const changeDate = () => {
-    console.log(date['year'], date['month']);
     router.get(route('attendances.index'), date );
 };
 
@@ -48,7 +45,7 @@ const stampDay = (day, data) => {
         </template>
 
         <Modal :show='showAttendance' @close="showAttendance = false">
-            <Stamp :stampData="stampData" @close="showAttendance = false" :errors="props.errors"/>
+            <Show :stampData="stampData" @close="showAttendance = false" :errors="props.errors"/>
         </Modal>
 
         <div class="py-12">
@@ -91,7 +88,7 @@ const stampDay = (day, data) => {
                                     </div>
                                 </div>
 
-                                <div class="lg:w-6/7 w-full mx-auto overflow-auto">
+                                <div class="lg:w-5/6 w-full mx-auto overflow-auto">
                                     <table class="table-auto w-full text-left whitespace-no-wrap">
                                         <thead>
                                             <tr>
@@ -107,17 +104,23 @@ const stampDay = (day, data) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="datum, day in props.data" :key="day" @click="stampDay(day, datum)"
-                                                class="cursor-pointer transition transform hover:scale-[1.01] hover:shadow-md hover:bg-gray-100 border-t-2 border-gray-200">
+                                            <tr v-for="datum, day in props.data" :key="day" @click="datum[0]?.attendance_status?.status !== 'approved' && stampDay(day, datum)"
+                                                :class="[
+                                                    'transition transform border-t-2 border-gray-200',
+                                                    datum[0]?.attendance_status?.status === 'approved'
+                                                    ? 'bg-gray-200 cursor-not-allowed opacity-70'
+                                                    : 'cursor-pointer hover:scale-[1.01] hover:shadow-md hover:bg-gray-100'
+                                                ]"
+                                                :title="datum[0]?.attendance_status?.status === 'approved' ? '承認済みのため編集できません' : ''">
                                                 <td class="px-4 py-3 text-sm text-center">{{ day }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? datum[0].vacation.vacation_type_jp:'-' }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? datum[0].clock_in_time:'-' }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? datum[0].clock_out_time:'-' }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? `${datum[0].break_minutes}分`:'-' }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? datum[0].work_hours_time:'-' }}</td>
-                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0] ? datum[0].overtime_hours_time:'-' }}</td>
-                                                <td class="px-4 py-3 text-center">{{ datum[0] ? datum[0].attendance_status.status_jp :'-' }}</td>
-                                                <td class="px-4 py-3 text-xs w-40 break-words">{{ datum[0] ? datum[0].attendance_status.reason :'-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.vacation?.vacation_type_jp ?? '-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.clock_in ? datum[0]?.clock_in_time : '-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.clock_out ? datum[0]?.clock_out_time : '-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.break_minutes ? `${datum[0]?.break_minutes}分` : '-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.work_hours ? datum[0]?.work_hours_time : '-' }}</td>
+                                                <td class="px-4 py-3 text-sm text-center">{{ datum[0]?.overtime_hours ? datum[0]?.overtime_hours_time : '-' }}</td>
+                                                <td class="px-4 py-3 text-center">{{  datum[0]?.attendance_status.status_jp ?? '-' }}</td>
+                                                <td class="px-4 py-3 text-xs w-40 break-words">{{ datum[0]?.attendance_status.reason ?? '-' }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address')->nullable();
+            $table->time('start_time')->default('09:00');; // 所定出社時間
+            $table->time('end_time')->default('18:00'); // 所定退社時間
+            $table->float('break_time')->default(1.0);
             $table->float('work_hours')->default(8.0); // 所定労働時間（例: 8.0 = 8時間、float型）
             $table->timestamps();
         });

@@ -38,6 +38,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('attendances.index')" :active="route().current('attendances.index')">
                                     勤怠一覧
                                 </NavLink>
+                                <NavLink :href="route('attendances.request_attendances')" :active="route().current('attendances.request_attendances')">
+                                    各種申請
+                                </NavLink>
                             </div>
                         </div>
 
@@ -147,6 +150,9 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('attendances.index')" :active="route().current('attendances.index')">
                             勤怠一覧
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                            各種申請
                         </ResponsiveNavLink>
                     </div>
 

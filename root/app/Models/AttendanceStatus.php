@@ -14,7 +14,8 @@ class AttendanceStatus extends Model
     protected $fillable = [
         'user_id',
         'attendance_id',
-        'reason'
+        'reason',
+        'status',
     ];
 
     protected $appends = ['status_jp'];
