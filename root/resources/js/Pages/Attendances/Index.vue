@@ -88,10 +88,10 @@ const stampDay = (day, data) => {
                                     </div>
                                 </div>
 
-                                <div class="lg:w-5/6 w-full mx-auto overflow-auto">
+                                <div class="lg:w-5/6 w-full mx-auto">
                                     <table class="table-auto w-full text-left whitespace-no-wrap">
                                         <thead>
-                                            <tr>
+                                            <tr >
                                                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl ">日付</th>
                                                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">出勤区分</th>
                                                 <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">出勤時間</th>

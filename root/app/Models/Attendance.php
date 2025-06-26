@@ -56,6 +56,12 @@ class Attendance extends Model
         return $this->hasOne(Vacation::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+
     // アセット
     protected function clockInTime(): Attribute
     {

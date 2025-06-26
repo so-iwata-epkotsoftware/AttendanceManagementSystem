@@ -25,7 +25,9 @@ class Company extends Model
         'start_in_time',
         'end_out_time',
         'work_hours_time',
+        'work_hours_hi',
         'break',
+        'break_hi',
     ];
 
     public function admins()
@@ -42,6 +44,12 @@ class Company extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
 
     // アセット
     protected function startInTime(): Attribute
@@ -65,10 +73,24 @@ class Company extends Model
         );
     }
 
+    protected function workHoursHi(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>Carbon::createFromTime(0, 0, 0)->addSeconds($this->work_hours * 3600)->format('H:i'),
+        );
+    }
+
     protected function Break(): Attribute
     {
         return Attribute::make(
             get: fn () =>Carbon::createFromTime(0, 0, 0)->addSeconds($this->break_time * 3600)->format('H時間i分'),
+        );
+    }
+
+    protected function BreakHi(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>Carbon::createFromTime(0, 0, 0)->addSeconds($this->break_time * 3600)->format('H:i'),
         );
     }
 }

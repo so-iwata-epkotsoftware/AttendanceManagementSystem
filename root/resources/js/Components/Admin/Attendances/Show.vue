@@ -10,6 +10,8 @@ const props = defineProps({
     errors   : Object
 });
 
+console.log(props.stampData);
+
 const form = reactive({
     date : props.stampData.day,
     id: props.stampData.data[0]?.id ?? null,
@@ -81,7 +83,7 @@ const stamp = id => {
                             </span>
                         </div>
                     </div>
-                    
+
                     <div class="lg:w-4/5 md:w-3/4 mx-auto">
                         <div class="flex flex-wrap -m-2">
                             <div class="p-2 w-1/3">

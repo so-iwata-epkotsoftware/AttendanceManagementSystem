@@ -74,6 +74,13 @@ class User extends Authenticatable
         return $this->hasMany(Vacation::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+
+
     // スタッフ検索用スコープ
     #[Scope]
     protected function searchUser(Builder $query, ?string $searchUser)

@@ -22,21 +22,15 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('admin.user.dashboard')">
+                                <Link :href="route('admin.user.index')">
                                     <ApplicationLogo  class="block h-9 w-auto fill-current text-gray-800"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.user.dashboard')" :active="route().current('admin.user.dashboard')">
-                                    Dashboard
-                                </NavLink>
                                 <NavLink :href="route('admin.user.index')" :active="route().current('admin.user.index')">
                                     ユーザー一覧
-                                </NavLink>
-                                <NavLink :href="route('admin.user.create')" :active="route().current('admin.user.create')">
-                                    新規ユーザー登録
                                 </NavLink>
                             </div>
                         </div>
@@ -139,9 +133,6 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink :href="route('admin.user.dashboard')" :active="route().current('admin.user.dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('admin.user.index')" :active="route().current('admin.user.index')">
                             ユーザー一覧
                         </ResponsiveNavLink>
