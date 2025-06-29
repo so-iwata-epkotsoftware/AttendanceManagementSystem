@@ -7,6 +7,7 @@ import Modal from '@/Components/Modal.vue';
 import Show from '@/Components/Admin/Attendances/Show.vue';
 
 const props = defineProps({
+    staff_id : Number,
     user : Object,
     data : Object, // データ取得
     date : Object, // 日付年と月取得
@@ -20,7 +21,7 @@ const date = reactive({
 });
 
 const changeDate = () => {
-    router.get(route('admin.user.show', date.user_id), date );
+    router.get(route('admin.attendances.index', props.staff_id), date );
 };
 
 const showAttendance = ref(false);
@@ -71,9 +72,8 @@ const stampDay = (day, data) => {
                                             <option value="2024">2024年</option>
                                             <option value="2025">2025年</option>
                                         </select>
-                                        <select v-model="date.month"
-                                            class="border-none text-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
-                                        @change="changeDate">
+                                        <select v-model="date.month" @change="changeDate"
+                                            class="border-none text-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded" >
                                             <option value="01" >1月</option>
                                             <option value="02" >2月</option>
                                             <option value="03" >3月</option>

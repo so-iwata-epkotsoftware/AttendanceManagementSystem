@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VariousApplicationsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -11,14 +13,32 @@ use Inertia\Inertia;
 Route::middleware(['auth'])
     ->prefix('attendances')
     ->name('attendances.')
-    ->controller(AttendanceController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::post('/{attendance}', 'update')->name('update');
-        Route::get('/request_attendances', 'request_attendances')->name('request_attendances');
+        Route::controller(AttendanceController::class)
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::post('/{attendance}', 'update')->name('update');
+            });
+
+        Route::prefix('variousApplications')
+            ->name('variousApplications.')
+            ->controller(VariousApplicationsController::class)
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::get('/list', 'list')->name('list');
+            });
+
+        Route::prefix('expenses')
+            ->name('expenses.')
+            ->controller(ExpenseController::class)
+            ->group(function() {
+                Route::get('/', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+            });
     });
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

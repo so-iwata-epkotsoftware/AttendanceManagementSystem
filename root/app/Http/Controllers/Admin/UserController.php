@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RegisterUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\Company;
@@ -17,17 +18,15 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-
-
     /**
      * ユーザー一覧表示画面
      */
     public function index(Request $request)
     {
         $admin = Auth::user();
-        $staff_users = User::searchUser($request->searchUser)
+        $staff_users = User::searchUser($request->searchText)
             ->searchCompany($request->selectedCompanies)
-            ->select('id', 'name', 'company_id')
+            ->select('id', 'name', 'company_id', 'email')
             ->where('admin_id', $admin->id)
             ->with('company')
             ->withCount([
@@ -50,16 +49,6 @@ class UserController extends Controller
             'user' => $admin,
             'staff_users' => $staff_users,
             'companies' => $companies,
-        ]);
-    }
-
-    /**
-     * ユーザー新規登録画面
-     */
-    public function create()
-    {
-        return Inertia::render('Admin/User/Create', [
-            'user' => Auth::user(),
         ]);
     }
 
@@ -100,77 +89,43 @@ class UserController extends Controller
     }
 
     /**
-     * ユーザー詳細画面
+     * ユーザー情報更新
      */
-    public function show(Request $request,User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $admin = Auth::user();
+        DB::transaction(function() use($request, $user) {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password,
+            ]);
+            $user->company()->update([
+                'name' => $request->company_name,
+                'address' => $request->address,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'break_time' => $this->decimal($request->break_time),
+                'work_hours' => $this->decimal($request->work_hours),
+            ]);
+        });
 
-        $date = [
-            'year' => $request->year ?? date('Y'),
-            'month' => $request->month ?? date('m'),
-        ];
+        return to_route('admin.user.index');
+    }
 
-        $startDate = Carbon::create($date['year'], $date['month'], 1)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
-
-        $attendances = Attendance::select('id', 'date', 'user_id', 'company_id', 'clock_in', 'clock_out', 'work_hours', 'break_minutes', 'overtime_hours')->where('user_id', $user->id)
-            ->whereBetween('date', [$startDate, $endDate])
-            ->orderBy('date', 'asc')
-            ->with(['attendance_status' => function($query) {
-                        $query->select('id', 'user_id', 'attendance_id', 'status', 'reason');
-                    },
-                    'vacation' => function($query) {
-                        $query->select('id', 'attendance_id', 'vacation_type');
-                    }])
-            ->get();
-
-        $data = [];
-        for ($d = $startDate->copy(); $d->lte($endDate); $d->addDay()) {
-            $data[$d->format('Y/m/d')] = [
-                'user_id' => $user->id,
-                'company_id' => $user->company_id,
-            ];
+    /**
+     * ユーザー削除処理
+     */
+    public function destroy(Request $request)
+    {
+        // dd(array_column($request->users, 'id'));
+        if ($request->users) {
+            User::whereIn('id', array_column($request->users, 'id'))->delete();
         }
 
-        foreach ($attendances as $attendance)
-        {
-            $data[Carbon::parse($attendance->date)->format('Y/m/d')] = [$attendance];
-        }
-
-
-        return Inertia::render('Admin/User/Show', [
-            'user' => $admin,
-            'data' => $data,
-            'date' => $date,
-        ]);
+        return to_route('admin.user.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     *
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-     public function dashboard()
+    public function dashboard()
     {
         $request_users = User::select('id', 'name', 'company_id')
             ->withCount([

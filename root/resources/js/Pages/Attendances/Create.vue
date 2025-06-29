@@ -94,8 +94,8 @@ const clockOutStamp = () => {
                                     <p class="sm:text-2xl text-2xl font-medium title-font text-gray-900">{{ stamp }}</p>
                                 </div>
 
-                                <div class="lg:w-1/2 md:w-2/3 mx-auto flex flex-wrap m-4">
-                                    <div class="p-2 lg:w-1/2">
+                                <div class="lg:w-2/3 md:w-2/3 mx-auto flex flex-wrap m-4">
+                                    <div class="p-2 w-1/2">
                                         <div class="relative">
                                             <label for="vacation_type" class="leading-7 text-sm text-gray-600">出勤区分</label>
                                             <select name="vacation_type" id="vacation_type" v-model="form.vacation_type"
@@ -113,7 +113,7 @@ const clockOutStamp = () => {
                                             <InputError :message="props.errors?.vacation_type"/>
                                         </div>
                                     </div>
-                                    <div class="p-2 lg:w-1/2">
+                                    <div class="p-2 w-1/2">
                                         <div class="relative">
                                             <label for="break_minutes" class="leading-7 text-sm text-gray-600" >休憩時間（分）</label>
                                             <input type="number" id="break_minutes" name="break_minutes" v-model="form.break_minutes"
@@ -124,8 +124,8 @@ const clockOutStamp = () => {
 
                                 </div>
 
-                                <div class="lg:w-1/2 md:w-2/3 mx-auto">
-                                    <div class="flex flex-wrap -m-2">
+                                <div class="lg:w-2/3 md:w-2/3 mx-auto">
+                                    <div class="flex flex-wrap -m-2 ">
                                         <div class="p-2 w-1/2">
                                             <div class="relative">
                                                 <button :disabled="props.stampData?.clock_in" @click="clockInStamp"

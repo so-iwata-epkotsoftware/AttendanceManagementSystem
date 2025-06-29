@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VariousApplicationsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -19,21 +19,27 @@ Route::middleware(['auth:admin',])
             ->controller(UserController::class)
             ->group(function() {
                 Route::get('/', 'index')->name('index');
-                Route::get('dashboard', 'dashboard')->name('dashboard');
+                Route::post('/', 'store')->name('store');
+                Route::post('destroy', 'destroy')->name('destroy');
+                Route::post('{user}', 'update')->name('update');
+            });
+
+        Route::prefix('attendances')
+            ->name('attendances.')
+            ->controller(AttendanceController::class)
+            ->group(function() {
+                Route::get('/{user}', 'index')->name('index');
                 Route::get('create', 'create')->name('create');
-                Route::get('{user}', 'show')->name('show');
                 Route::post('/', 'store')->name('store');
                 Route::post('{attendance}', 'update')->name('update');
             });
-        Route::prefix('attendances')
-            ->name('attendances.')
-            ->controller(AdminAttendanceController::class)
+
+        Route::prefix('variousApplications')
+            ->name('variousApplications.')
+            ->controller(VariousApplicationsController::class)
             ->group(function() {
                 Route::get('/', 'index')->name('index');
-                Route::get('{attendances}', 'show')->name('show');
-                Route::get('create', 'create')->name('create');
-                Route::post('/', 'store')->name('store');
-                Route::post('{attendance}', 'update')->name('update');
+                Route::post('{expense}', 'update')->name('update');
             });
     });
 

@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttendanceRequest;
+use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceStatus;
 use App\Models\Company;
+use App\Models\Expense;
 use App\Models\User;
 use App\Models\Vacation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class AttendanceController extends Controller
@@ -215,7 +218,7 @@ class AttendanceController extends Controller
 
     public function request_attendances()
     {
-        return Inertia::render('Attendances/RequestAttendances', [
+        return Inertia::render('VariousApplications/RequestAttendances', [
             'user' => Auth::user(),
         ]);
     }

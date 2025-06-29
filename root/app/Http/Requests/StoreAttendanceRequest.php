@@ -49,4 +49,16 @@ class StoreAttendanceRequest extends FormRequest
             'reason'         => ['nullable','string','max:1000',]
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'date'           => '日付',
+            'clock_in'       => '出勤時間',
+            'clock_out'      => '退勤時間',
+            'break_minutes'  => '休憩時間',
+            'vacation_type'  => '出勤区分',
+            'reason'         => '備考'
+        ];
+    }
 }
