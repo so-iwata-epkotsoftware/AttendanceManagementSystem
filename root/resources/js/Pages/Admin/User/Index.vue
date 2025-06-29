@@ -113,7 +113,7 @@ const createUser = () => {
                     <div class="p-6 text-gray-900 mx-auto">
                         <section @focus.prevent="searchUser" class="text-gray-600 body-font">
                             <div class="container px-5 py-5 mx-auto flex flex-wrap">
-                                <div class="lg:w-5/6 md:w-1/2 mx-auto shadow-[14px_11px_25px_-14px_#777777]
+                                <div class="lg:w-5/6 md:w-5/6 mx-auto shadow-[14px_11px_25px_-14px_#777777]
                                         border-2 rounded-lg border-gray-200 p-10 mb-10 relative">
                                         <div class=" absolute top-4 right-12 flex">
                                             <span @click="createUser" class="cursor-pointer transition transform hover:scale-[1.5] mr-5">
@@ -158,8 +158,8 @@ const createUser = () => {
                                     </div>
                                 </div>
 
-                                <div class="flex flex-wrap mx-auto w-4/5">
-                                    <div class="m-4 max-w-md border-none  mx-auto relative rounded-lg " v-for="user in props.staff_users.data" :key="user.id">
+                                <div class="flex flex-wrap mx-auto w-5/6">
+                                    <div class="m-4 max-w-md border-none mx-auto relative rounded-lg " v-for="user in props.staff_users.data" :key="user.id">
                                         <div @click="editUser(user)"
                                             class="flex items-center justify-center bg-green-300 border border-green-300 border-opacity-70
                                                     min-h-[40px] min-w-[90px] px-6 py-2 cursor-pointer transition transform hover:scale-[1.08] hover:bg-green-500

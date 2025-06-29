@@ -32,6 +32,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('admin.user.index')" :active="route().current('admin.user.index')">
                                     ユーザー一覧
                                 </NavLink>
+                                <NavLink :href="route('admin.variousApplications.index')" :active="route().current('admin.variousApplications.index')">
+                                    申請一覧
+                                </NavLink>
                             </div>
                         </div>
 

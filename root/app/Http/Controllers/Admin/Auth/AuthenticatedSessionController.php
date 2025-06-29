@@ -31,9 +31,7 @@ class AuthenticatedSessionController extends Controller
     public function store(AdminLoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-
         return redirect()->intended(route('admin.user.index', absolute: false));
     }
 

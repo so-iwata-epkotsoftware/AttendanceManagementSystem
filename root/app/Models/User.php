@@ -49,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

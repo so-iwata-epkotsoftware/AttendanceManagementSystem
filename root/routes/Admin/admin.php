@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VariousApplicationsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,14 @@ Route::middleware(['auth:admin',])
                 Route::get('create', 'create')->name('create');
                 Route::post('/', 'store')->name('store');
                 Route::post('{attendance}', 'update')->name('update');
+            });
+
+        Route::prefix('variousApplications')
+            ->name('variousApplications.')
+            ->controller(VariousApplicationsController::class)
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::post('{expense}', 'update')->name('update');
             });
     });
 

@@ -46,6 +46,11 @@ class Admin extends Authenticatable
         ];
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

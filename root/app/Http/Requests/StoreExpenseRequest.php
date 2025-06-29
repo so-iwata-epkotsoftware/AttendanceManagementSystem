@@ -27,7 +27,7 @@ class StoreExpenseRequest extends FormRequest
             'section'      => ['required', 'string', 'max:255'],
             'amount'       => ['required', 'integer', 'min:0'],
             'receipt'      => ['required', 'array'],
-            'receipt.*'    => ['file', 'image', 'mimes:jpeg,png,jpg,gif,svg,pdf', 'max:2048'],
+            'receipt[*]'    => ['file', 'image', 'mimes:jpeg,png,jpg,gif,svg,pdf', 'max:2048'],
             'note'         => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -39,7 +39,7 @@ class StoreExpenseRequest extends FormRequest
             'date'         => '利用日',
             'section'      => '利用区間',
             'amount'       => '金額',
-            'receipt.*'    => '画像',
+            'receipt'    => '画像',
             'note'         => '備考・申請理由',
         ];
     }

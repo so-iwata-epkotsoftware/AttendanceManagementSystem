@@ -39,9 +39,9 @@ class Expense extends Model
         return $this->belongsTo(Attendance::class);
     }
 
-    public function expenseReceipt()
+    public function expenseReceipts()
     {
-        return $this->hasOne(ExpenseReceipt::class);
+        return $this->hasMany(ExpenseReceipt::class);
     }
 
     protected function expenseTypeJp(): Attribute
